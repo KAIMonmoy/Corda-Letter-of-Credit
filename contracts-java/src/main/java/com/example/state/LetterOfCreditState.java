@@ -51,48 +51,9 @@ public class LetterOfCreditState implements ContractState {
                                @NotNull String productName,
                                @NotNull Long productQuantity,
                                @NotNull Long productPriceInUSD,
-                               @NotNull Long productPriceInKG) {
-        this.locId = locId;
-        this.locType = locType;
-        this.locExpiryDate = locExpiryDate;
-        this.seller = seller;
-        this.buyer = buyer;
-        this.advisingBank = advisingBank;
-        this.issuingBank = issuingBank;
-        this.locValue = locValue;
-        this.loadingPortAddress = loadingPortAddress;
-        this.loadingPortCity = loadingPortCity;
-        this.loadingPortCountry = loadingPortCountry;
-        this.dischargePortAddress = dischargePortAddress;
-        this.dischargePortCity = dischargePortCity;
-        this.dischargePortCountry = dischargePortCountry;
-        this.productName = productName;
-        this.productQuantity = productQuantity;
-        this.productPriceInUSD = productPriceInUSD;
-        this.productPriceInKG = productPriceInKG;
-        this.locStatus = "ISSUED";
-    }
-
-    public LetterOfCreditState(@NotNull String locId,
-                               @NotNull String locType,
-                               @NotNull String locExpiryDate,
-                               @NotNull Party seller,
-                               @NotNull Party buyer,
-                               @NotNull Party advisingBank,
-                               @NotNull Party issuingBank,
-                               @NotNull Long locValue,
-                               @NotNull String loadingPortAddress,
-                               @NotNull String loadingPortCity,
-                               @NotNull String loadingPortCountry,
-                               @NotNull String dischargePortAddress,
-                               @NotNull String dischargePortCity,
-                               @NotNull String dischargePortCountry,
-                               @NotNull String productName,
-                               @NotNull Long productQuantity,
-                               @NotNull Long productPriceInUSD,
                                @NotNull Long productPriceInKG,
                                @NotNull String locStatus
-                               ) {
+    ) {
         this.locId = locId;
         this.locType = locType;
         this.locExpiryDate = locExpiryDate;
@@ -112,6 +73,47 @@ public class LetterOfCreditState implements ContractState {
         this.productPriceInUSD = productPriceInUSD;
         this.productPriceInKG = productPriceInKG;
         this.locStatus = locStatus;
+    }
+
+    public LetterOfCreditState(@NotNull String locId,
+                               @NotNull String locType,
+                               @NotNull String locExpiryDate,
+                               @NotNull Party seller,
+                               @NotNull Party buyer,
+                               @NotNull Party advisingBank,
+                               @NotNull Party issuingBank,
+                               @NotNull Long locValue,
+                               @NotNull String loadingPortAddress,
+                               @NotNull String loadingPortCity,
+                               @NotNull String loadingPortCountry,
+                               @NotNull String dischargePortAddress,
+                               @NotNull String dischargePortCity,
+                               @NotNull String dischargePortCountry,
+                               @NotNull String productName,
+                               @NotNull Long productQuantity,
+                               @NotNull Long productPriceInUSD,
+                               @NotNull Long productPriceInKG) {
+        this(
+                locId,
+                locType,
+                locExpiryDate,
+                seller,
+                buyer,
+                advisingBank,
+                issuingBank,
+                locValue,
+                loadingPortAddress,
+                loadingPortCity,
+                loadingPortCountry,
+                dischargePortAddress,
+                dischargePortCity,
+                dischargePortCountry,
+                productName,
+                productQuantity,
+                productPriceInUSD,
+                productPriceInKG,
+                "ISSUED"
+        );
     }
 
     public static LetterOfCreditState locWithUpdatedStatus(LetterOfCreditState currentLOC, String newStatus) {

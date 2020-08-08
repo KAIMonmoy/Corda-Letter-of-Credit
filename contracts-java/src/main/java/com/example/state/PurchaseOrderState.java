@@ -126,6 +126,6 @@ public class PurchaseOrderState implements ContractState {
                 " productQuantity: " + productQuantity +
                 " productPriceInUSD: " + productPriceInUSD +
                 " productPriceInKG: " + productPriceInKG +
-                "}";
+                " }";
     }
 }

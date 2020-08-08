@@ -32,6 +32,8 @@ public class LetterOfCreditState implements ContractState {
     @NotNull private final Long productPriceInUSD;
     @NotNull private final Long productPriceInKG;
 
+    @NotNull private final String locStatus;
+
     public LetterOfCreditState(@NotNull String locId,
                                @NotNull String locType,
                                @NotNull String locExpiryDate,
@@ -68,6 +70,72 @@ public class LetterOfCreditState implements ContractState {
         this.productQuantity = productQuantity;
         this.productPriceInUSD = productPriceInUSD;
         this.productPriceInKG = productPriceInKG;
+        this.locStatus = "ISSUED";
+    }
+
+    public LetterOfCreditState(@NotNull String locId,
+                               @NotNull String locType,
+                               @NotNull String locExpiryDate,
+                               @NotNull Party seller,
+                               @NotNull Party buyer,
+                               @NotNull Party advisingBank,
+                               @NotNull Party issuingBank,
+                               @NotNull Long locValue,
+                               @NotNull String loadingPortAddress,
+                               @NotNull String loadingPortCity,
+                               @NotNull String loadingPortCountry,
+                               @NotNull String dischargePortAddress,
+                               @NotNull String dischargePortCity,
+                               @NotNull String dischargePortCountry,
+                               @NotNull String productName,
+                               @NotNull Long productQuantity,
+                               @NotNull Long productPriceInUSD,
+                               @NotNull Long productPriceInKG,
+                               @NotNull String locStatus
+                               ) {
+        this.locId = locId;
+        this.locType = locType;
+        this.locExpiryDate = locExpiryDate;
+        this.seller = seller;
+        this.buyer = buyer;
+        this.advisingBank = advisingBank;
+        this.issuingBank = issuingBank;
+        this.locValue = locValue;
+        this.loadingPortAddress = loadingPortAddress;
+        this.loadingPortCity = loadingPortCity;
+        this.loadingPortCountry = loadingPortCountry;
+        this.dischargePortAddress = dischargePortAddress;
+        this.dischargePortCity = dischargePortCity;
+        this.dischargePortCountry = dischargePortCountry;
+        this.productName = productName;
+        this.productQuantity = productQuantity;
+        this.productPriceInUSD = productPriceInUSD;
+        this.productPriceInKG = productPriceInKG;
+        this.locStatus = locStatus;
+    }
+
+    public static LetterOfCreditState locWithUpdatedStatus(LetterOfCreditState currentLOC, String newStatus) {
+        return new LetterOfCreditState(
+                currentLOC.locId,
+                currentLOC.locType,
+                currentLOC.locExpiryDate,
+                currentLOC.seller,
+                currentLOC.buyer,
+                currentLOC.advisingBank,
+                currentLOC.issuingBank,
+                currentLOC.locValue,
+                currentLOC.loadingPortAddress,
+                currentLOC.loadingPortCity,
+                currentLOC.loadingPortCountry,
+                currentLOC.dischargePortAddress,
+                currentLOC.dischargePortCity,
+                currentLOC.dischargePortCountry,
+                currentLOC.productName,
+                currentLOC.productQuantity,
+                currentLOC.productPriceInUSD,
+                currentLOC.productPriceInKG,
+                newStatus
+        );
     }
 
 
@@ -75,6 +143,11 @@ public class LetterOfCreditState implements ContractState {
     @Override
     public List<AbstractParty> getParticipants() {
         return Arrays.asList(seller, buyer, issuingBank, advisingBank);
+    }
+
+    @NotNull
+    public String getLocStatus() {
+        return locStatus;
     }
 
     @NotNull
@@ -187,7 +260,8 @@ public class LetterOfCreditState implements ContractState {
                 productName,
                 productQuantity,
                 productPriceInUSD,
-                productPriceInKG
+                productPriceInKG,
+                locStatus
         );
     }
 
@@ -214,7 +288,8 @@ public class LetterOfCreditState implements ContractState {
         productName.equals(that.productName) &&
         productQuantity.equals(that.productQuantity) &&
         productPriceInUSD.equals(that.productPriceInUSD) &&
-        productPriceInKG.equals(that.productPriceInKG);
+        productPriceInKG.equals(that.productPriceInKG) &&
+        locStatus.equals(that.locStatus);
     }
 
     @Override
@@ -238,6 +313,7 @@ public class LetterOfCreditState implements ContractState {
                 " productQuantity: " + productQuantity +
                 " productPriceInUSD: " + productPriceInUSD +
                 " productPriceInKG: " + productPriceInKG +
+                " locStatus: " + locStatus +
                 " }";
     }
 }

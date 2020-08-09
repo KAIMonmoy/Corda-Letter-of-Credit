@@ -56,7 +56,9 @@ public interface CreatePurchaseOrderFlow {
         }
 
         @NotNull private final String purchaseOrderId;
-        @NotNull private final Party seller = getOurIdentity();
+        // Flow Properties should not be accessed before instantiation of the flow
+        // Thus should not be accessed in Constructor or Initialization
+        @NotNull private Party seller;
         @NotNull private final Party buyer;
         @NotNull private final String purchaseOrderIssueDate;
         @NotNull private final String productName;
@@ -81,8 +83,14 @@ public interface CreatePurchaseOrderFlow {
             this.productGrossWeightInKG = productGrossWeightInKG;
         }
 
+        // This method is also suspendable
+        // Failing to mark it as suspendable will cause error
+        @Suspendable
         @Override
         public SignedTransaction call() throws FlowException {
+            // Seller initiates the flow
+            seller = getOurIdentity();
+
             // Taking first notary on network. (For Dev)
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
 

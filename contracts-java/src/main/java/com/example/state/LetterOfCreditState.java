@@ -31,7 +31,11 @@ public class LetterOfCreditState implements ContractState {
     @NotNull private final Long productQuantity;
     @NotNull private final Long productPriceInUSD;
     @NotNull private final Long productPriceInKG;
-
+    /**
+     // locStatus LifeCycle
+     // APPLIED -> REJECTED
+     // APPLIED -> ISSUED -> SHIPPED -> SELLER_PAID -> ADVISING_BANK_PAID -> ISSUING_BANK_PAID
+     */
     @NotNull private final String locStatus;
 
     public LetterOfCreditState(@NotNull String locId,
@@ -112,7 +116,7 @@ public class LetterOfCreditState implements ContractState {
                 productQuantity,
                 productPriceInUSD,
                 productPriceInKG,
-                "ISSUED"
+                "APPLIED"
         );
     }
 

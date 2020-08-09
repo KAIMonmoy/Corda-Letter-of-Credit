@@ -24,7 +24,7 @@ public class BillOfLadingState implements ContractState {
     @NotNull private final String productDescription;
     @NotNull private final Long productQuantity;
     @NotNull private final Long productPriceInUSD;
-    @NotNull private final Long productPriceInKG;
+    @NotNull private final Long productGrossWeightInKG;
     @NotNull private final String loadingPortAddress;
     @NotNull private final String loadingPortCity;
     @NotNull private final String loadingPortCountry;
@@ -43,7 +43,7 @@ public class BillOfLadingState implements ContractState {
                              @NotNull String productDescription,
                              @NotNull Long productQuantity,
                              @NotNull Long productPriceInUSD,
-                             @NotNull Long productPriceInKG,
+                             @NotNull Long productGrossWeightInKG,
                              @NotNull String loadingPortAddress,
                              @NotNull String loadingPortCity,
                              @NotNull String loadingPortCountry,
@@ -61,7 +61,7 @@ public class BillOfLadingState implements ContractState {
         this.productDescription = productDescription;
         this.productQuantity = productQuantity;
         this.productPriceInUSD = productPriceInUSD;
-        this.productPriceInKG = productPriceInKG;
+        this.productGrossWeightInKG = productGrossWeightInKG;
         this.loadingPortAddress = loadingPortAddress;
         this.loadingPortCity = loadingPortCity;
         this.loadingPortCountry = loadingPortCountry;
@@ -132,8 +132,8 @@ public class BillOfLadingState implements ContractState {
     }
 
     @NotNull
-    public Long getProductPriceInKG() {
-        return productPriceInKG;
+    public Long getProductGrossWeightInKG() {
+        return productGrossWeightInKG;
     }
 
     @NotNull
@@ -180,7 +180,7 @@ public class BillOfLadingState implements ContractState {
                 productDescription,
                 productQuantity,
                 productPriceInUSD,
-                productPriceInKG,
+                productGrossWeightInKG,
                 loadingPortAddress,
                 loadingPortCity,
                 loadingPortCountry,
@@ -207,7 +207,7 @@ public class BillOfLadingState implements ContractState {
         productDescription.equals(that.productDescription) &&
         productQuantity.equals(that.productQuantity) &&
         productPriceInUSD.equals(that.productPriceInUSD) &&
-        productPriceInKG.equals(that.productPriceInKG) &&
+        productGrossWeightInKG.equals(that.productGrossWeightInKG) &&
         loadingPortAddress.equals(that.loadingPortAddress) &&
         loadingPortCity.equals(that.loadingPortCity) &&
         loadingPortCountry.equals(that.loadingPortCountry) &&
@@ -230,7 +230,7 @@ public class BillOfLadingState implements ContractState {
                 " productDescription: " + productDescription +
                 " productQuantity: " + productQuantity +
                 " productPriceInUSD: " + productPriceInUSD +
-                " productPriceInKG: " + productPriceInKG +
+                " productGrossWeightInKG: " + productGrossWeightInKG +
                 " loadingPortAddress: " + loadingPortAddress +
                 " loadingPortCity: " + loadingPortCity +
                 " loadingPortCountry: " + loadingPortCountry +

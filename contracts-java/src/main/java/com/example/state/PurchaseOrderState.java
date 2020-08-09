@@ -20,7 +20,7 @@ public class PurchaseOrderState implements ContractState {
     @NotNull private final String productName;
     @NotNull private final Long productQuantity;
     @NotNull private final Long productPriceInUSD;
-    @NotNull private final Long productPriceInKG;
+    @NotNull private final Long productGrossWeightInKG;
 
     public PurchaseOrderState(@NotNull String purchaseOrderId,
                               @NotNull Party seller,
@@ -29,7 +29,7 @@ public class PurchaseOrderState implements ContractState {
                               @NotNull String productName,
                               @NotNull Long productQuantity,
                               @NotNull Long productPriceInUSD,
-                              @NotNull Long productPriceInKG) {
+                              @NotNull Long productGrossWeightInKG) {
         this.purchaseOrderId = purchaseOrderId;
         this.seller = seller;
         this.buyer = buyer;
@@ -37,7 +37,7 @@ public class PurchaseOrderState implements ContractState {
         this.productName = productName;
         this.productQuantity = productQuantity;
         this.productPriceInUSD = productPriceInUSD;
-        this.productPriceInKG = productPriceInKG;
+        this.productGrossWeightInKG = productGrossWeightInKG;
     }
 
     @NotNull
@@ -82,8 +82,8 @@ public class PurchaseOrderState implements ContractState {
     }
 
     @NotNull
-    public Long getProductPriceInKG() {
-        return productPriceInKG;
+    public Long getProductGrossWeightInKG() {
+        return productGrossWeightInKG;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class PurchaseOrderState implements ContractState {
         this.productName.equals(that.productName) &&
         this.productQuantity.equals(that.productQuantity) &&
         this.productPriceInUSD.equals(that.productPriceInUSD) &&
-        this.productPriceInKG.equals(that.productPriceInKG);
+        this.productGrossWeightInKG.equals(that.productGrossWeightInKG);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class PurchaseOrderState implements ContractState {
                 productName,
                 productQuantity,
                 productPriceInUSD,
-                productPriceInKG
+                productGrossWeightInKG
             );
     }
 
@@ -125,7 +125,7 @@ public class PurchaseOrderState implements ContractState {
                 " productName: " + productName +
                 " productQuantity: " + productQuantity +
                 " productPriceInUSD: " + productPriceInUSD +
-                " productPriceInKG: " + productPriceInKG +
+                " productGrossWeightInKG: " + productGrossWeightInKG +
                 " }";
     }
 }

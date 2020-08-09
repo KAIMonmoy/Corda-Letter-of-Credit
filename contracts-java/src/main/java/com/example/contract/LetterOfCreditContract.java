@@ -145,6 +145,16 @@ public class LetterOfCreditContract implements Contract {
                         command.getSigners().contains(outputLetterOfCreditState.getSeller().getOwningKey())
                 );
 
+                requirements.using(
+                        "IssuingBank must be a signer in ApplyForLetterOfCredit.",
+                        command.getSigners().contains(outputLetterOfCreditState.getIssuingBank().getOwningKey())
+                );
+
+                requirements.using(
+                        "AdvisingBank must be a signer in ApplyForLetterOfCredit.",
+                        command.getSigners().contains(outputLetterOfCreditState.getAdvisingBank().getOwningKey())
+                );
+
                 return null;
             });
         } else if (command.getValue() instanceof Commands.ApproveLetterOfCreditApplication) {

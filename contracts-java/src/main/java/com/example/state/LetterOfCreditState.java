@@ -5,6 +5,7 @@ import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
+import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -38,6 +39,7 @@ public class LetterOfCreditState implements ContractState {
      */
     @NotNull private final String locStatus;
 
+    @ConstructorForDeserialization
     public LetterOfCreditState(@NotNull String locId,
                                @NotNull String locType,
                                @NotNull String locExpiryDate,

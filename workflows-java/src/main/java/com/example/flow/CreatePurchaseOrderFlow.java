@@ -56,9 +56,6 @@ public interface CreatePurchaseOrderFlow {
         }
 
         @NotNull private final String purchaseOrderId;
-        // Flow Properties should not be accessed before instantiation of the flow
-        // Thus should not be accessed in Constructor or Initialization
-        @NotNull private Party seller;
         @NotNull private final Party buyer;
         @NotNull private final String purchaseOrderIssueDate;
         @NotNull private final String productName;
@@ -89,7 +86,9 @@ public interface CreatePurchaseOrderFlow {
         @Override
         public SignedTransaction call() throws FlowException {
             // Seller initiates the flow
-            seller = getOurIdentity();
+            // Flow Properties should not be accessed before instantiation of the flow
+            // Thus should not be accessed in Constructor or Initialization
+            final Party seller = getOurIdentity();
 
             // Taking first notary on network. (For Dev)
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
@@ -162,7 +161,7 @@ public interface CreatePurchaseOrderFlow {
         }
     }
 
-    @InitiatedBy(Initiator.class)
+    @InitiatedBy(CreatePurchaseOrderFlow.Initiator.class)
     class Responder extends FlowLogic<SignedTransaction> {
 
         private final FlowSession sellerSession;

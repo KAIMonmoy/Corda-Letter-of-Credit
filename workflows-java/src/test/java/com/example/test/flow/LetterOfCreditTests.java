@@ -1,17 +1,24 @@
 package com.example.test.flow;
 
-import com.example.flow.ExampleFlow;
+import com.example.flow.ApplyForLetterOfCreditFlow;
+import com.example.flow.CreatePurchaseOrderFlow;
 import com.example.state.BillOfLadingState;
 import com.example.state.LetterOfCreditState;
 import com.example.state.PurchaseOrderState;
 import com.google.common.collect.ImmutableList;
+import net.corda.core.concurrent.CordaFuture;
+import net.corda.core.contracts.StateAndRef;
 import net.corda.core.identity.CordaX500Name;
+import net.corda.core.transactions.SignedTransaction;
 import net.corda.testing.node.MockNetwork;
 import net.corda.testing.node.MockNetworkParameters;
 import net.corda.testing.node.StartedMockNode;
 import net.corda.testing.node.TestCordapp;
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
+
+import java.util.List;
 
 abstract class LetterOfCreditTests {
     public MockNetwork network;
@@ -20,9 +27,9 @@ abstract class LetterOfCreditTests {
     public StartedMockNode issuingBank;
     public StartedMockNode advisingBank;
 
-    public PurchaseOrderState demoPurchaseOrder;
-    public LetterOfCreditState demoLetterOfCreditState;
-    public BillOfLadingState demoBillOfLadingState;
+    public static PurchaseOrderState demoPurchaseOrder;
+    public static LetterOfCreditState demoLetterOfCreditState;
+    public static BillOfLadingState demoBillOfLadingState;
 
     @Before
     public void setup() {
@@ -31,11 +38,12 @@ abstract class LetterOfCreditTests {
                 TestCordapp.findCordapp("com.example.flow"))));
         buyer = network.createPartyNode(new CordaX500Name("Buyer", "Kowloon", "HK"));
         seller = network.createPartyNode(new CordaX500Name("Seller", "Chittagong", "BD"));
-        issuingBank = network.createPartyNode(new CordaX500Name("AdvisingBank", "Dhaka", "BD"));
-        advisingBank = network.createPartyNode(new CordaX500Name("IssuingBank", "Kowloon", "HK"));
+        advisingBank = network.createPartyNode(new CordaX500Name("AdvisingBank", "Dhaka", "BD"));
+        issuingBank = network.createPartyNode(new CordaX500Name("IssuingBank", "Kowloon", "HK"));
         // For real nodes this happens automatically, but we have to manually register the flow for tests.
         for (StartedMockNode node : ImmutableList.of(buyer, seller, issuingBank, advisingBank)) {
-            node.registerInitiatedFlow(ExampleFlow.Acceptor.class);
+            node.registerInitiatedFlow(CreatePurchaseOrderFlow.Initiator.class, CreatePurchaseOrderFlow.Responder.class);
+            node.registerInitiatedFlow(ApplyForLetterOfCreditFlow.Initiator.class, ApplyForLetterOfCreditFlow.Responder.class);
         }
 
         demoPurchaseOrder = new PurchaseOrderState(
@@ -95,6 +103,29 @@ abstract class LetterOfCreditTests {
     @After
     public void tearDown() {
         network.stopNodes();
+    }
+
+    @NotNull
+    public static List<StateAndRef<PurchaseOrderState>> performCreatePurchaseOrderFlow(
+            @NotNull final MockNetwork network,
+            @NotNull final StartedMockNode buyer,
+            @NotNull final StartedMockNode seller
+    ) throws Throwable {
+        CreatePurchaseOrderFlow.Initiator flow = new CreatePurchaseOrderFlow.Initiator(
+                demoPurchaseOrder.getPurchaseOrderId(),
+                buyer.getInfo().getLegalIdentities().get(0),
+                demoPurchaseOrder.getPurchaseOrderIssueDate(),
+                demoPurchaseOrder.getProductName(),
+                demoPurchaseOrder.getProductQuantity(),
+                demoPurchaseOrder.getProductPriceInUSD(),
+                demoBillOfLadingState.getProductGrossWeightInKG()
+        );
+        CordaFuture<SignedTransaction> future = seller.startFlow(flow);
+        network.runNetwork();
+
+        SignedTransaction signedTx = future.get();
+        return signedTx.toLedgerTransaction(seller.getServices())
+                .outRefsOfType(PurchaseOrderState.class);
     }
 
 }

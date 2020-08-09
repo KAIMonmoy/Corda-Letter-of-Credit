@@ -271,31 +271,38 @@ public class LetterOfCreditState implements ContractState {
         );
     }
 
+    public boolean equalsIgnoreLOCStatus(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        final LetterOfCreditState that = (LetterOfCreditState) obj;
+
+        return locId.equals(that.locId) &&
+                locType.equals(that.locType) &&
+                locExpiryDate.equals(that.locExpiryDate) &&
+                seller.equals(that.seller) &&
+                buyer.equals(that.buyer) &&
+                advisingBank.equals(that.advisingBank) &&
+                issuingBank.equals(that.issuingBank) &&
+                locValue.equals(that.locValue) &&
+                loadingPortAddress.equals(that.loadingPortAddress) &&
+                loadingPortCity.equals(that.loadingPortCity) &&
+                loadingPortCountry.equals(that.loadingPortCountry) &&
+                dischargePortAddress.equals(that.dischargePortAddress) &&
+                dischargePortCity.equals(that.dischargePortCity) &&
+                dischargePortCountry.equals(that.dischargePortCountry) &&
+                productName.equals(that.productName) &&
+                productQuantity.equals(that.productQuantity) &&
+                productPriceInUSD.equals(that.productPriceInUSD) &&
+                productGrossWeightInKG.equals(that.productGrossWeightInKG);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         final LetterOfCreditState that = (LetterOfCreditState) obj;
 
-        return locId.equals(that.locId) &&
-        locType.equals(that.locType) &&
-        locExpiryDate.equals(that.locExpiryDate) &&
-        seller.equals(that.seller) &&
-        buyer.equals(that.buyer) &&
-        advisingBank.equals(that.advisingBank) &&
-        issuingBank.equals(that.issuingBank) &&
-        locValue.equals(that.locValue) &&
-        loadingPortAddress.equals(that.loadingPortAddress) &&
-        loadingPortCity.equals(that.loadingPortCity) &&
-        loadingPortCountry.equals(that.loadingPortCountry) &&
-        dischargePortAddress.equals(that.dischargePortAddress) &&
-        dischargePortCity.equals(that.dischargePortCity) &&
-        dischargePortCountry.equals(that.dischargePortCountry) &&
-        productName.equals(that.productName) &&
-        productQuantity.equals(that.productQuantity) &&
-        productPriceInUSD.equals(that.productPriceInUSD) &&
-        productGrossWeightInKG.equals(that.productGrossWeightInKG) &&
-        locStatus.equals(that.locStatus);
+        return this.equalsIgnoreLOCStatus(obj) && locStatus.equals(that.locStatus);
     }
 
     @Override

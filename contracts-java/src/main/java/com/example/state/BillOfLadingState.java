@@ -79,6 +79,32 @@ public class BillOfLadingState implements ContractState {
         this.dischargePortCountry = dischargePortCountry;
     }
 
+    public static BillOfLadingState billOfLadingStateWithUpdatedOwner(BillOfLadingState bill, Party newOwner) {
+        return new BillOfLadingState(
+                bill.billOfLadingId,
+                newOwner,
+                bill.seller,
+                bill.buyer,
+                bill.advisingBank,
+                bill.issuingBank,
+                bill.carrierCompanyName,
+                bill.carrierName,
+                bill.loadingDate,
+                bill.dischargeDate,
+                bill.productName,
+                bill.productDescription,
+                bill.productQuantity,
+                bill.productPriceInUSD,
+                bill.productGrossWeightInKG,
+                bill.loadingPortAddress,
+                bill.loadingPortCity,
+                bill.loadingPortCountry,
+                bill.dischargePortAddress,
+                bill.dischargePortCity,
+                bill.dischargePortCountry
+        );
+    }
+
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {

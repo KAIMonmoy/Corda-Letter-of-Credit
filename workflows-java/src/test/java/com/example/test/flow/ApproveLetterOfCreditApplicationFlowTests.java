@@ -103,7 +103,7 @@ public class ApproveLetterOfCreditApplicationFlowTests extends LetterOfCreditTes
 
         SignedTransaction signedTx = future.get();
         // We check the recorded transaction in all vaults.
-        for (StartedMockNode node : ImmutableList.of(seller, buyer)) {
+        for (StartedMockNode node : ImmutableList.of(seller, buyer, issuingBank, advisingBank)) {
             node.transaction(() -> {
                 List<StateAndRef<LetterOfCreditState>> letterOfCredits =
                         node.getServices().getVaultService().queryBy(LetterOfCreditState.class).getStates();

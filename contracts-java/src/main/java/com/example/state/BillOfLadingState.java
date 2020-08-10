@@ -14,8 +14,11 @@ import java.util.Objects;
 @BelongsToContract(LetterOfCreditContract.class)
 public class BillOfLadingState implements ContractState {
     @NotNull private final String billOfLadingId;
+    @NotNull private final Party currentOwner;
     @NotNull private final Party seller;
     @NotNull private final Party buyer;
+    @NotNull private final Party advisingBank;
+    @NotNull private final Party issuingBank;
     @NotNull private final String carrierCompanyName;
     @NotNull private final String carrierName;
     @NotNull private final String loadingDate;
@@ -33,8 +36,11 @@ public class BillOfLadingState implements ContractState {
     @NotNull private final String dischargePortCountry;
 
     public BillOfLadingState(@NotNull String billOfLadingId,
+                             @NotNull Party currentOwner,
                              @NotNull Party seller,
                              @NotNull Party buyer,
+                             @NotNull Party advisingBank,
+                             @NotNull Party issuingBank,
                              @NotNull String carrierCompanyName,
                              @NotNull String carrierName,
                              @NotNull String loadingDate,
@@ -51,8 +57,11 @@ public class BillOfLadingState implements ContractState {
                              @NotNull String dischargePortCity,
                              @NotNull String dischargePortCountry) {
         this.billOfLadingId = billOfLadingId;
+        this.currentOwner = currentOwner;
         this.seller = seller;
         this.buyer = buyer;
+        this.advisingBank = advisingBank;
+        this.issuingBank = issuingBank;
         this.carrierCompanyName = carrierCompanyName;
         this.carrierName = carrierName;
         this.loadingDate = loadingDate;
@@ -73,7 +82,22 @@ public class BillOfLadingState implements ContractState {
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
-        return Arrays.asList(seller, buyer);
+        return Arrays.asList(seller, buyer, advisingBank, issuingBank);
+    }
+
+    @NotNull
+    public Party getCurrentOwner() {
+        return currentOwner;
+    }
+
+    @NotNull
+    public Party getAdvisingBank() {
+        return advisingBank;
+    }
+
+    @NotNull
+    public Party getIssuingBank() {
+        return issuingBank;
     }
 
     @NotNull
@@ -170,8 +194,11 @@ public class BillOfLadingState implements ContractState {
     public int hashCode() {
         return Objects.hash(
                 billOfLadingId,
+                currentOwner,
                 seller,
                 buyer,
+                advisingBank,
+                issuingBank,
                 carrierCompanyName,
                 carrierName,
                 loadingDate,
@@ -197,8 +224,11 @@ public class BillOfLadingState implements ContractState {
         final BillOfLadingState that = (BillOfLadingState) obj;
 
         return billOfLadingId.equals(that.billOfLadingId) &&
+        currentOwner.equals(that.currentOwner) &&
         seller.equals(that.seller) &&
         buyer.equals(that.buyer) &&
+        advisingBank.equals(that.advisingBank) &&
+        issuingBank.equals(that.issuingBank) &&
         carrierCompanyName.equals(that.carrierCompanyName) &&
         carrierName.equals(that.carrierName) &&
         loadingDate.equals(that.loadingDate) &&
@@ -220,8 +250,11 @@ public class BillOfLadingState implements ContractState {
     public String toString() {
         return "BillOfLadingState{" +
                 " billOfLadingId: " + billOfLadingId +
+                " currentOwner: " + currentOwner +
                 " seller: " + seller +
                 " buyer: " + buyer +
+                " advisingBank: " + advisingBank +
+                " issuingBank: " + issuingBank +
                 " carrierCompanyName: " + carrierCompanyName +
                 " carrierName: " + carrierName +
                 " loadingDate: " + loadingDate +

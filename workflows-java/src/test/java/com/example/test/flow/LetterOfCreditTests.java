@@ -47,6 +47,7 @@ abstract class LetterOfCreditTests {
             node.registerInitiatedFlow(ShipProductsFlow.Initiator.class, ShipProductsFlow.Responder.class);
             node.registerInitiatedFlow(PaySellerFlow.Initiator.class, PaySellerFlow.Responder.class);
             node.registerInitiatedFlow(PayAdvisingBankFlow.Initiator.class, PayAdvisingBankFlow.Responder.class);
+            node.registerInitiatedFlow(PayIssuingBankFlow.Initiator.class, PayIssuingBankFlow.Responder.class);
         }
 
         demoPurchaseOrder = new PurchaseOrderState(
@@ -267,6 +268,38 @@ abstract class LetterOfCreditTests {
                 inputBillOfLading.getBillOfLadingId()
         );
         CordaFuture<SignedTransaction> future = advisingBank.startFlow(flow);
+        network.runNetwork();
+
+        SignedTransaction signedTx = future.get();
+
+        // 0: LOC
+        // 1: BillOfLading
+        return ImmutableList.of(
+                signedTx.toLedgerTransaction(seller.getServices())
+                        .outRefsOfType(LetterOfCreditState.class).get(0),
+                signedTx.toLedgerTransaction(seller.getServices())
+                        .outRefsOfType(BillOfLadingState.class).get(0)
+
+        );
+    }
+
+    @NotNull
+    public static List<StateAndRef> performPayAdvisingBankFlow(
+            @NotNull final MockNetwork network,
+            @NotNull final StartedMockNode buyer,
+            @NotNull final StartedMockNode seller,
+            @NotNull final StartedMockNode advisingBank,
+            @NotNull final StartedMockNode issuingBank
+    ) throws Throwable {
+        final List<StateAndRef> inputRefs =
+                performPaySellerFlow(network, buyer, seller, advisingBank, issuingBank);
+        final LetterOfCreditState inputLOC = (LetterOfCreditState) inputRefs.get(0).getState().getData();
+        final BillOfLadingState inputBillOfLading = (BillOfLadingState) inputRefs.get(1).getState().getData();
+        PayAdvisingBankFlow.Initiator flow = new PayAdvisingBankFlow.Initiator(
+                inputLOC.getLocId(),
+                inputBillOfLading.getBillOfLadingId()
+        );
+        CordaFuture<SignedTransaction> future = issuingBank.startFlow(flow);
         network.runNetwork();
 
         SignedTransaction signedTx = future.get();

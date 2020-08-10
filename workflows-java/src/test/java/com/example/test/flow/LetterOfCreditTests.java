@@ -3,6 +3,7 @@ package com.example.test.flow;
 import com.example.flow.ApproveLetterOfCreditApplicationFlow;
 import com.example.flow.ApplyForLetterOfCreditFlow;
 import com.example.flow.CreatePurchaseOrderFlow;
+import com.example.flow.ShipProductsFlow;
 import com.example.state.BillOfLadingState;
 import com.example.state.LetterOfCreditState;
 import com.example.state.PurchaseOrderState;
@@ -46,6 +47,7 @@ abstract class LetterOfCreditTests {
             node.registerInitiatedFlow(CreatePurchaseOrderFlow.Initiator.class, CreatePurchaseOrderFlow.Responder.class);
             node.registerInitiatedFlow(ApplyForLetterOfCreditFlow.Initiator.class, ApplyForLetterOfCreditFlow.Responder.class);
             node.registerInitiatedFlow(ApproveLetterOfCreditApplicationFlow.Initiator.class, ApproveLetterOfCreditApplicationFlow.Responder.class);
+            node.registerInitiatedFlow(ShipProductsFlow.Initiator.class, ShipProductsFlow.Responder.class);
         }
 
         demoPurchaseOrder = new PurchaseOrderState(
@@ -157,6 +159,52 @@ abstract class LetterOfCreditTests {
                 demoLetterOfCreditState.getDischargePortCountry()
         );
         CordaFuture<SignedTransaction> future = buyer.startFlow(flow);
+        network.runNetwork();
+
+        SignedTransaction signedTx = future.get();
+        return signedTx.toLedgerTransaction(seller.getServices())
+                .outRefsOfType(LetterOfCreditState.class);
+    }
+
+    @NotNull
+    public static List<StateAndRef<LetterOfCreditState>> performApproveLetterOfCreditApplicationFlowWithIssued(
+            @NotNull final MockNetwork network,
+            @NotNull final StartedMockNode buyer,
+            @NotNull final StartedMockNode seller,
+            @NotNull final StartedMockNode advisingBank,
+            @NotNull final StartedMockNode issuingBank
+    ) throws Throwable {
+        final List<StateAndRef<LetterOfCreditState>> inputRefs =
+                performApplyForLetterOfCreditFlow(network, buyer, seller, advisingBank, issuingBank);
+        final LetterOfCreditState letterOfCreditState = inputRefs.get(0).getState().getData();
+        ApproveLetterOfCreditApplicationFlow.Initiator flow = new ApproveLetterOfCreditApplicationFlow.Initiator(
+                letterOfCreditState.getLocId(),
+                "ISSUED"
+        );
+        CordaFuture<SignedTransaction> future = issuingBank.startFlow(flow);
+        network.runNetwork();
+
+        SignedTransaction signedTx = future.get();
+        return signedTx.toLedgerTransaction(seller.getServices())
+                .outRefsOfType(LetterOfCreditState.class);
+    }
+
+    @NotNull
+    public static List<StateAndRef<LetterOfCreditState>> performApproveLetterOfCreditApplicationFlowWithRejected(
+            @NotNull final MockNetwork network,
+            @NotNull final StartedMockNode buyer,
+            @NotNull final StartedMockNode seller,
+            @NotNull final StartedMockNode advisingBank,
+            @NotNull final StartedMockNode issuingBank
+    ) throws Throwable {
+        final List<StateAndRef<LetterOfCreditState>> inputRefs =
+                performApplyForLetterOfCreditFlow(network, buyer, seller, advisingBank, issuingBank);
+        final LetterOfCreditState letterOfCreditState = inputRefs.get(0).getState().getData();
+        ApproveLetterOfCreditApplicationFlow.Initiator flow = new ApproveLetterOfCreditApplicationFlow.Initiator(
+                letterOfCreditState.getLocId(),
+                "REJECTED"
+        );
+        CordaFuture<SignedTransaction> future = issuingBank.startFlow(flow);
         network.runNetwork();
 
         SignedTransaction signedTx = future.get();

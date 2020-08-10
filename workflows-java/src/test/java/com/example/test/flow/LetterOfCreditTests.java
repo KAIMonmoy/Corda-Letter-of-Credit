@@ -1,5 +1,6 @@
 package com.example.test.flow;
 
+import com.example.flow.ApproveLetterOfCreditApplicationFlow;
 import com.example.flow.ApplyForLetterOfCreditFlow;
 import com.example.flow.CreatePurchaseOrderFlow;
 import com.example.state.BillOfLadingState;
@@ -44,6 +45,7 @@ abstract class LetterOfCreditTests {
         for (StartedMockNode node : ImmutableList.of(buyer, seller, issuingBank, advisingBank)) {
             node.registerInitiatedFlow(CreatePurchaseOrderFlow.Initiator.class, CreatePurchaseOrderFlow.Responder.class);
             node.registerInitiatedFlow(ApplyForLetterOfCreditFlow.Initiator.class, ApplyForLetterOfCreditFlow.Responder.class);
+            node.registerInitiatedFlow(ApproveLetterOfCreditApplicationFlow.Initiator.class, ApproveLetterOfCreditApplicationFlow.Responder.class);
         }
 
         demoPurchaseOrder = new PurchaseOrderState(
@@ -126,6 +128,40 @@ abstract class LetterOfCreditTests {
         SignedTransaction signedTx = future.get();
         return signedTx.toLedgerTransaction(seller.getServices())
                 .outRefsOfType(PurchaseOrderState.class);
+    }
+
+    @NotNull
+    public static List<StateAndRef<LetterOfCreditState>> performApplyForLetterOfCreditFlow(
+            @NotNull final MockNetwork network,
+            @NotNull final StartedMockNode buyer,
+            @NotNull final StartedMockNode seller,
+            @NotNull final StartedMockNode advisingBank,
+            @NotNull final StartedMockNode issuingBank
+    ) throws Throwable {
+        final List<StateAndRef<PurchaseOrderState>> inputRefs =
+                performCreatePurchaseOrderFlow(network, buyer, seller);
+        final PurchaseOrderState purchaseOrder = inputRefs.get(0).getState().getData();
+        ApplyForLetterOfCreditFlow.Initiator flow = new ApplyForLetterOfCreditFlow.Initiator(
+                purchaseOrder.getPurchaseOrderId(),
+                demoLetterOfCreditState.getLocId(),
+                demoLetterOfCreditState.getLocType(),
+                demoLetterOfCreditState.getLocExpiryDate(),
+                advisingBank.getInfo().getLegalIdentities().get(0),
+                issuingBank.getInfo().getLegalIdentities().get(0),
+                demoLetterOfCreditState.getLocValue(),
+                demoLetterOfCreditState.getLoadingPortAddress(),
+                demoLetterOfCreditState.getLoadingPortCity(),
+                demoLetterOfCreditState.getLoadingPortCountry(),
+                demoLetterOfCreditState.getDischargePortAddress(),
+                demoLetterOfCreditState.getDischargePortCity(),
+                demoLetterOfCreditState.getDischargePortCountry()
+        );
+        CordaFuture<SignedTransaction> future = buyer.startFlow(flow);
+        network.runNetwork();
+
+        SignedTransaction signedTx = future.get();
+        return signedTx.toLedgerTransaction(seller.getServices())
+                .outRefsOfType(LetterOfCreditState.class);
     }
 
 }

@@ -106,6 +106,7 @@ public interface ShipProductsFlow {
                     inputLetterOfCredit,
                     "SHIPPED"
             );
+            letterOfCredit.setBillOfLadingId(billOfLadingId);
             final BillOfLadingState billOfLading = new BillOfLadingState(
                     billOfLadingId,
                     inputLetterOfCredit.getSeller(),

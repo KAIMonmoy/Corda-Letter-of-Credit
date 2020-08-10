@@ -136,7 +136,8 @@ public interface ApplyForLetterOfCreditFlow {
                     inputPurchaseOrder.getProductName(),
                     inputPurchaseOrder.getProductQuantity(),
                     inputPurchaseOrder.getProductPriceInUSD(),
-                    inputPurchaseOrder.getProductGrossWeightInKG()
+                    inputPurchaseOrder.getProductGrossWeightInKG(),
+                    inputPurchaseOrder.getPurchaseOrderId()
             );
             final List<Party> requiredSigners = Arrays.asList(
                     inputPurchaseOrder.getBuyer(),

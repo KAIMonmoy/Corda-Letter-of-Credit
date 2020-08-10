@@ -106,6 +106,11 @@ public class LetterOfCreditContract implements Contract {
                         );
 
                 requirements.using(
+                        "PurchaseOrderId in LOC & Input PurchaseOrderId must be same.",
+                        inputPurchaseOrder.getPurchaseOrderId().equals(outputLetterOfCreditState.getPurchaseOrderId())
+                );
+
+                requirements.using(
                         "Seller & Buyer should be conserved in input & output.",
                         isSameSellerAndBuyer
                 );
@@ -250,6 +255,11 @@ public class LetterOfCreditContract implements Contract {
                         inputLetterOfCreditState.getDischargePortAddress().equals(outputBillOfLadingState.getDischargePortAddress()) &&
                         inputLetterOfCreditState.getDischargePortCity().equals(outputBillOfLadingState.getDischargePortCity()) &&
                         inputLetterOfCreditState.getDischargePortCountry().equals(outputBillOfLadingState.getDischargePortCountry());
+
+                requirements.using(
+                        "BillOfLadingId in LOC & Output BillOfLadingId must be same",
+                        outputBillOfLadingState.getBillOfLadingId().equals(outputLetterOfCreditState.getBillOfLadingId())
+                );
 
                 requirements.using(
                         "Seller should be the owner in output BillOfLading in ShipProducts.",

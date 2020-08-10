@@ -78,7 +78,8 @@ abstract class LetterOfCreditTests {
                 demoPurchaseOrder.getProductName(),
                 demoPurchaseOrder.getProductQuantity(),
                 demoPurchaseOrder.getProductPriceInUSD(),
-                demoPurchaseOrder.getProductGrossWeightInKG()
+                demoPurchaseOrder.getProductGrossWeightInKG(),
+                "1"
         );
         demoBillOfLadingState = new BillOfLadingState(
                 "1",

@@ -39,6 +39,28 @@ public class LetterOfCreditState implements ContractState {
      */
     @NotNull private final String locStatus;
 
+    // Reference to the PurchaseOrder
+    private String purchaseOrderId;
+
+    // Reference to the BillOfLading
+    private String billOfLadingId;
+
+    public String getPurchaseOrderId() {
+        return purchaseOrderId;
+    }
+
+    public void setPurchaseOrderId(String purchaseOrderId) {
+        this.purchaseOrderId = purchaseOrderId;
+    }
+
+    public String getBillOfLadingId() {
+        return billOfLadingId;
+    }
+
+    public void setBillOfLadingId(String billOfLadingId) {
+        this.billOfLadingId = billOfLadingId;
+    }
+
     @ConstructorForDeserialization
     public LetterOfCreditState(@NotNull String locId,
                                @NotNull String locType,
@@ -58,7 +80,9 @@ public class LetterOfCreditState implements ContractState {
                                @NotNull Long productQuantity,
                                @NotNull Long productPriceInUSD,
                                @NotNull Long productGrossWeightInKG,
-                               @NotNull String locStatus
+                               @NotNull String locStatus,
+                               String purchaseOrderId,
+                               String billOfLadingId
     ) {
         this.locId = locId;
         this.locType = locType;
@@ -79,6 +103,8 @@ public class LetterOfCreditState implements ContractState {
         this.productPriceInUSD = productPriceInUSD;
         this.productGrossWeightInKG = productGrossWeightInKG;
         this.locStatus = locStatus;
+        this.purchaseOrderId = purchaseOrderId;
+        this.billOfLadingId = billOfLadingId;
     }
 
     public LetterOfCreditState(@NotNull String locId,
@@ -98,7 +124,8 @@ public class LetterOfCreditState implements ContractState {
                                @NotNull String productName,
                                @NotNull Long productQuantity,
                                @NotNull Long productPriceInUSD,
-                               @NotNull Long productGrossWeightInKG) {
+                               @NotNull Long productGrossWeightInKG,
+                               @NotNull String purchaseOrderId) {
         this(
                 locId,
                 locType,
@@ -118,7 +145,9 @@ public class LetterOfCreditState implements ContractState {
                 productQuantity,
                 productPriceInUSD,
                 productGrossWeightInKG,
-                "APPLIED"
+                "APPLIED",
+                purchaseOrderId,
+                null
         );
     }
 
@@ -142,7 +171,9 @@ public class LetterOfCreditState implements ContractState {
                 currentLOC.productQuantity,
                 currentLOC.productPriceInUSD,
                 currentLOC.productGrossWeightInKG,
-                newStatus
+                newStatus,
+                currentLOC.purchaseOrderId,
+                currentLOC.billOfLadingId
         );
     }
 

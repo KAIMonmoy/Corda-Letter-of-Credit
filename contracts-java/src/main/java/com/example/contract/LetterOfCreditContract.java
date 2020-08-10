@@ -238,6 +238,8 @@ public class LetterOfCreditContract implements Contract {
                 final boolean isBillOfLadingDetailsSame =
                         inputLetterOfCreditState.getSeller().equals(outputBillOfLadingState.getSeller()) &&
                         inputLetterOfCreditState.getBuyer().equals(outputBillOfLadingState.getBuyer()) &&
+                        inputLetterOfCreditState.getAdvisingBank().equals(outputBillOfLadingState.getAdvisingBank()) &&
+                        inputLetterOfCreditState.getIssuingBank().equals(outputBillOfLadingState.getIssuingBank()) &&
                         inputLetterOfCreditState.getProductName().equals(outputBillOfLadingState.getProductName()) &&
                         inputLetterOfCreditState.getProductQuantity().equals(outputBillOfLadingState.getProductQuantity()) &&
                         inputLetterOfCreditState.getProductPriceInUSD().equals(outputBillOfLadingState.getProductPriceInUSD()) &&
@@ -248,6 +250,11 @@ public class LetterOfCreditContract implements Contract {
                         inputLetterOfCreditState.getDischargePortAddress().equals(outputBillOfLadingState.getDischargePortAddress()) &&
                         inputLetterOfCreditState.getDischargePortCity().equals(outputBillOfLadingState.getDischargePortCity()) &&
                         inputLetterOfCreditState.getDischargePortCountry().equals(outputBillOfLadingState.getDischargePortCountry());
+
+                requirements.using(
+                        "Seller should be the owner in output BillOfLading in ShipProducts.",
+                        outputBillOfLadingState.getCurrentOwner().equals(outputBillOfLadingState.getSeller())
+                );
 
                 requirements.using(
                         "LetterOfCreditState details should be same in input & output.",
@@ -310,9 +317,19 @@ public class LetterOfCreditContract implements Contract {
                         "Output should have exactly 1 LetterOfCreditState in PaySeller.",
                         outputs.size() == 1
                 );
+                final List<BillOfLadingState> outputsBillOfLadingState = tx.outputsOfType(BillOfLadingState.class);
+                requirements.using(
+                        "Output should have exactly 1 BillOfLadingState in PaySeller.",
+                        outputsBillOfLadingState.size() == 1
+                );
 
                 final LetterOfCreditState inputLetterOfCreditState = inputsLetterOfCreditState.get(0);
                 final LetterOfCreditState outputLetterOfCreditState = outputs.get(0);
+
+                requirements.using(
+                        "Advising Bank should be the owner in output BillOfLading in PaySeller.",
+                        outputsBillOfLadingState.get(0).getCurrentOwner().equals(outputsBillOfLadingState.get(0).getAdvisingBank())
+                );
 
                 requirements.using(
                         "LetterOfCreditState details should be same in input & output.",
@@ -330,12 +347,22 @@ public class LetterOfCreditContract implements Contract {
                 );
 
                 requirements.using(
-                        "Seller must be a signer in PaySeller.",
+                        "Buyer must be a signer in ApplyForLetterOfCredit.",
+                        command.getSigners().contains(outputLetterOfCreditState.getBuyer().getOwningKey())
+                );
+
+                requirements.using(
+                        "Seller must be a signer in ApplyForLetterOfCredit.",
                         command.getSigners().contains(outputLetterOfCreditState.getSeller().getOwningKey())
                 );
 
                 requirements.using(
-                        "AdvisingBank must be a signer in PaySeller.",
+                        "IssuingBank must be a signer in ApplyForLetterOfCredit.",
+                        command.getSigners().contains(outputLetterOfCreditState.getIssuingBank().getOwningKey())
+                );
+
+                requirements.using(
+                        "AdvisingBank must be a signer in ApplyForLetterOfCredit.",
                         command.getSigners().contains(outputLetterOfCreditState.getAdvisingBank().getOwningKey())
                 );
 
@@ -343,10 +370,15 @@ public class LetterOfCreditContract implements Contract {
             });
         } else if (command.getValue() instanceof Commands.PayAdvisingBank) {
             requireThat(requirements -> {
-                final List<LetterOfCreditState> inputs = tx.inputsOfType(LetterOfCreditState.class);
+                final List<BillOfLadingState> inputsBillOfLadingState = tx.inputsOfType(BillOfLadingState.class);
+                requirements.using(
+                        "Input should have exactly 1 BillOfLadingState in PayAdvisingBank.",
+                        inputsBillOfLadingState.size() == 1
+                );
+                final List<LetterOfCreditState> inputsLetterOfCreditState = tx.inputsOfType(LetterOfCreditState.class);
                 requirements.using(
                         "Input should have exactly 1 LetterOfCreditState in PayAdvisingBank.",
-                        inputs.size() == 1
+                        inputsLetterOfCreditState.size() == 1
                 );
 
                 final List<LetterOfCreditState> outputs = tx.outputsOfType(LetterOfCreditState.class);
@@ -354,9 +386,19 @@ public class LetterOfCreditContract implements Contract {
                         "Output should have exactly 1 LetterOfCreditState in PayAdvisingBank.",
                         outputs.size() == 1
                 );
+                final List<BillOfLadingState> outputsBillOfLadingState = tx.outputsOfType(BillOfLadingState.class);
+                requirements.using(
+                        "Output should have exactly 1 BillOfLadingState in PayAdvisingBank.",
+                        outputsBillOfLadingState.size() == 1
+                );
 
-                final LetterOfCreditState inputLetterOfCreditState = inputs.get(0);
+                final LetterOfCreditState inputLetterOfCreditState = inputsLetterOfCreditState.get(0);
                 final LetterOfCreditState outputLetterOfCreditState = outputs.get(0);
+
+                requirements.using(
+                        "Issuing Bank should be the owner in output BillOfLading in PayAdvisingBank.",
+                        outputsBillOfLadingState.get(0).getCurrentOwner().equals(outputsBillOfLadingState.get(0).getIssuingBank())
+                );
 
                 requirements.using(
                         "LetterOfCreditState details should be same in input & output.",
@@ -374,12 +416,22 @@ public class LetterOfCreditContract implements Contract {
                 );
 
                 requirements.using(
-                        "IssuingBank must be a signer in PayAdvisingBank.",
+                        "Buyer must be a signer in ApplyForLetterOfCredit.",
+                        command.getSigners().contains(outputLetterOfCreditState.getBuyer().getOwningKey())
+                );
+
+                requirements.using(
+                        "Seller must be a signer in ApplyForLetterOfCredit.",
+                        command.getSigners().contains(outputLetterOfCreditState.getSeller().getOwningKey())
+                );
+
+                requirements.using(
+                        "IssuingBank must be a signer in ApplyForLetterOfCredit.",
                         command.getSigners().contains(outputLetterOfCreditState.getIssuingBank().getOwningKey())
                 );
 
                 requirements.using(
-                        "AdvisingBank must be a signer in PayAdvisingBank.",
+                        "AdvisingBank must be a signer in ApplyForLetterOfCredit.",
                         command.getSigners().contains(outputLetterOfCreditState.getAdvisingBank().getOwningKey())
                 );
 
@@ -387,10 +439,15 @@ public class LetterOfCreditContract implements Contract {
             });
         } else if (command.getValue() instanceof Commands.PayIssuingBank) {
             requireThat(requirements -> {
-                final List<LetterOfCreditState> inputs = tx.inputsOfType(LetterOfCreditState.class);
+                final List<BillOfLadingState> inputsBillOfLadingState = tx.inputsOfType(BillOfLadingState.class);
+                requirements.using(
+                        "Input should have exactly 1 BillOfLadingState in PayIssuingBank.",
+                        inputsBillOfLadingState.size() == 1
+                );
+                final List<LetterOfCreditState> inputsLetterOfCreditState = tx.inputsOfType(LetterOfCreditState.class);
                 requirements.using(
                         "Input should have exactly 1 LetterOfCreditState in PayIssuingBank.",
-                        inputs.size() == 1
+                        inputsLetterOfCreditState.size() == 1
                 );
 
                 final List<LetterOfCreditState> outputs = tx.outputsOfType(LetterOfCreditState.class);
@@ -398,9 +455,19 @@ public class LetterOfCreditContract implements Contract {
                         "Output should have exactly 1 LetterOfCreditState in PayIssuingBank.",
                         outputs.size() == 1
                 );
+                final List<BillOfLadingState> outputsBillOfLadingState = tx.outputsOfType(BillOfLadingState.class);
+                requirements.using(
+                        "Output should have exactly 1 BillOfLadingState in PayIssuingBank.",
+                        outputsBillOfLadingState.size() == 1
+                );
 
-                final LetterOfCreditState inputLetterOfCreditState = inputs.get(0);
+                final LetterOfCreditState inputLetterOfCreditState = inputsLetterOfCreditState.get(0);
                 final LetterOfCreditState outputLetterOfCreditState = outputs.get(0);
+
+                requirements.using(
+                        "Buyer should be the owner in output BillOfLading in PayIssuingBank.",
+                        outputsBillOfLadingState.get(0).getCurrentOwner().equals(outputsBillOfLadingState.get(0).getBuyer())
+                );
 
                 requirements.using(
                         "LetterOfCreditState details should be same in input & output.",
@@ -418,13 +485,23 @@ public class LetterOfCreditContract implements Contract {
                 );
 
                 requirements.using(
-                        "IssuingBank must be a signer in PayIssuingBank.",
+                        "Buyer must be a signer in ApplyForLetterOfCredit.",
+                        command.getSigners().contains(outputLetterOfCreditState.getBuyer().getOwningKey())
+                );
+
+                requirements.using(
+                        "Seller must be a signer in ApplyForLetterOfCredit.",
+                        command.getSigners().contains(outputLetterOfCreditState.getSeller().getOwningKey())
+                );
+
+                requirements.using(
+                        "IssuingBank must be a signer in ApplyForLetterOfCredit.",
                         command.getSigners().contains(outputLetterOfCreditState.getIssuingBank().getOwningKey())
                 );
 
                 requirements.using(
-                        "Buyer must be a signer in PayIssuingBank.",
-                        command.getSigners().contains(outputLetterOfCreditState.getBuyer().getOwningKey())
+                        "AdvisingBank must be a signer in ApplyForLetterOfCredit.",
+                        command.getSigners().contains(outputLetterOfCreditState.getAdvisingBank().getOwningKey())
                 );
 
                 return null;

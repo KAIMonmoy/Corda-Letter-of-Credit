@@ -109,7 +109,10 @@ public interface ShipProductsFlow {
             final BillOfLadingState billOfLading = new BillOfLadingState(
                     billOfLadingId,
                     inputLetterOfCredit.getSeller(),
+                    inputLetterOfCredit.getSeller(),
                     inputLetterOfCredit.getBuyer(),
+                    inputLetterOfCredit.getAdvisingBank(),
+                    inputLetterOfCredit.getIssuingBank(),
                     carrierCompanyName,
                     carrierName,
                     loadingDate,
@@ -244,6 +247,12 @@ public interface ShipProductsFlow {
                                 billOfLadingStates.size() == 1
                         );
 
+                        if (proposedLetterOfCreditState.getSeller().equals(ourId)) {
+                            requirements.using(
+                                    "Seller should be the owner of BillOfLading.",
+                                    billOfLadingStates.get(0).getCurrentOwner().equals(ourId)
+                            );
+                        }
 
                         requirements.using(
                                 "I (" + getOurIdentity() + ") must be relevant.",

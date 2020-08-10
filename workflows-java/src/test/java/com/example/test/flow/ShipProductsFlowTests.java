@@ -121,8 +121,11 @@ public class ShipProductsFlowTests extends LetterOfCreditTests {
                 assertEquals(1, billsOfLading.size());
                 BillOfLadingState billOfLading = billsOfLading.get(0).getState().getData();
                 assertEquals(demoBillOfLadingState.getBillOfLadingId(), billOfLading.getBillOfLadingId());
+                assertEquals(demoBillOfLadingState.getSeller(), billOfLading.getCurrentOwner());
                 assertEquals(demoBillOfLadingState.getSeller(), billOfLading.getSeller());
                 assertEquals(demoBillOfLadingState.getBuyer(), billOfLading.getBuyer());
+                assertEquals(demoBillOfLadingState.getAdvisingBank(), billOfLading.getAdvisingBank());
+                assertEquals(demoBillOfLadingState.getIssuingBank(), billOfLading.getIssuingBank());
                 assertEquals(demoBillOfLadingState.getCarrierCompanyName(), billOfLading.getCarrierCompanyName());
                 assertEquals(demoBillOfLadingState.getCarrierName(), billOfLading.getCarrierName());
                 assertEquals(demoBillOfLadingState.getLoadingDate(), billOfLading.getLoadingDate());

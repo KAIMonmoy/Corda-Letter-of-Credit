@@ -1,9 +1,6 @@
 package com.example.test.flow;
 
-import com.example.flow.ApproveLetterOfCreditApplicationFlow;
-import com.example.flow.ApplyForLetterOfCreditFlow;
-import com.example.flow.CreatePurchaseOrderFlow;
-import com.example.flow.ShipProductsFlow;
+import com.example.flow.*;
 import com.example.state.BillOfLadingState;
 import com.example.state.LetterOfCreditState;
 import com.example.state.PurchaseOrderState;
@@ -48,6 +45,7 @@ abstract class LetterOfCreditTests {
             node.registerInitiatedFlow(ApplyForLetterOfCreditFlow.Initiator.class, ApplyForLetterOfCreditFlow.Responder.class);
             node.registerInitiatedFlow(ApproveLetterOfCreditApplicationFlow.Initiator.class, ApproveLetterOfCreditApplicationFlow.Responder.class);
             node.registerInitiatedFlow(ShipProductsFlow.Initiator.class, ShipProductsFlow.Responder.class);
+            node.registerInitiatedFlow(PaySellerFlow.Initiator.class, PaySellerFlow.Responder.class);
         }
 
         demoPurchaseOrder = new PurchaseOrderState(
@@ -83,7 +81,10 @@ abstract class LetterOfCreditTests {
         demoBillOfLadingState = new BillOfLadingState(
                 "1",
                 demoLetterOfCreditState.getSeller(),
+                demoLetterOfCreditState.getSeller(),
                 demoLetterOfCreditState.getBuyer(),
+                demoLetterOfCreditState.getAdvisingBank(),
+                demoLetterOfCreditState.getIssuingBank(),
                 "CTG Ships Ltd",
                 "CTG Ship",
                 "02-01-2020",
@@ -210,6 +211,42 @@ abstract class LetterOfCreditTests {
         SignedTransaction signedTx = future.get();
         return signedTx.toLedgerTransaction(seller.getServices())
                 .outRefsOfType(LetterOfCreditState.class);
+    }
+
+    @NotNull
+    public static List<StateAndRef> performShipProductsFlow(
+            @NotNull final MockNetwork network,
+            @NotNull final StartedMockNode buyer,
+            @NotNull final StartedMockNode seller,
+            @NotNull final StartedMockNode advisingBank,
+            @NotNull final StartedMockNode issuingBank
+    ) throws Throwable {
+        final List<StateAndRef<LetterOfCreditState>> inputRefs =
+                performApproveLetterOfCreditApplicationFlowWithIssued(network, buyer, seller, advisingBank, issuingBank);
+        final LetterOfCreditState letterOfCredit = inputRefs.get(0).getState().getData();
+        ShipProductsFlow.Initiator flow = new ShipProductsFlow.Initiator(
+                letterOfCredit.getLocId(),
+                demoBillOfLadingState.getBillOfLadingId(),
+                demoBillOfLadingState.getCarrierCompanyName(),
+                demoBillOfLadingState.getCarrierName(),
+                demoBillOfLadingState.getLoadingDate(),
+                demoBillOfLadingState.getDischargeDate(),
+                demoBillOfLadingState.getProductDescription()
+        );
+        CordaFuture<SignedTransaction> future = seller.startFlow(flow);
+        network.runNetwork();
+
+        SignedTransaction signedTx = future.get();
+
+        // 0: LOC
+        // 1: BillOfLading
+        return ImmutableList.of(
+                signedTx.toLedgerTransaction(seller.getServices())
+                        .outRefsOfType(LetterOfCreditState.class).get(0),
+                signedTx.toLedgerTransaction(seller.getServices())
+                        .outRefsOfType(BillOfLadingState.class).get(0)
+
+        );
     }
 
 }

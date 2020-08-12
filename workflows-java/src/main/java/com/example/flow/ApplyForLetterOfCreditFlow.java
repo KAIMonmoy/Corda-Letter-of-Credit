@@ -188,8 +188,10 @@ public interface ApplyForLetterOfCreditFlow {
         }
 
         boolean isLOCIdUnique(String locId) {
+            QueryCriteria.VaultQueryCriteria criteria =
+                    new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.ALL);
             Vault.Page<LetterOfCreditState> results =
-                    getServiceHub().getVaultService().queryBy(LetterOfCreditState.class);
+                    getServiceHub().getVaultService().queryBy(LetterOfCreditState.class, criteria);
             return results.getStates().stream().noneMatch(
                     it -> it.getState().getData().getLocId().equals(locId)
             );

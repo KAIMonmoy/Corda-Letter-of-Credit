@@ -8,6 +8,7 @@ import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
 import net.corda.core.node.services.Vault;
+import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
@@ -153,8 +154,10 @@ public interface CreatePurchaseOrderFlow {
         }
 
         boolean isPurchaseOrderIdUnique(String purchaseOrderId) {
+            QueryCriteria.VaultQueryCriteria criteria =
+                    new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.ALL);
             Vault.Page<PurchaseOrderState> results =
-                    getServiceHub().getVaultService().queryBy(PurchaseOrderState.class);
+                    getServiceHub().getVaultService().queryBy(PurchaseOrderState.class, criteria);
             return results.getStates().stream().noneMatch(
                     it -> it.getState().getData().getPurchaseOrderId().equals(purchaseOrderId)
             );

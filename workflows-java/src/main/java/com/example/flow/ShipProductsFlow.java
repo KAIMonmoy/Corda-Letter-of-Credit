@@ -193,8 +193,10 @@ public interface ShipProductsFlow {
         }
 
         boolean isBillOfLadingIdUnique(String billOfLadingId) {
+            QueryCriteria.VaultQueryCriteria criteria =
+                    new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.ALL);
             Vault.Page<BillOfLadingState> results =
-                    getServiceHub().getVaultService().queryBy(BillOfLadingState.class);
+                    getServiceHub().getVaultService().queryBy(BillOfLadingState.class,criteria);
             return results.getStates().stream().noneMatch(
                     it -> it.getState().getData().getBillOfLadingId().equals(billOfLadingId)
             );

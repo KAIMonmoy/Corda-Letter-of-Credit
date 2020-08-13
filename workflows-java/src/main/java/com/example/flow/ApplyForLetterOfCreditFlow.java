@@ -6,6 +6,7 @@ import com.example.state.LetterOfCreditState;
 import com.example.state.PurchaseOrderState;
 import net.corda.core.contracts.Command;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -74,7 +75,6 @@ public interface ApplyForLetterOfCreditFlow {
         @NotNull private final String dischargePortCountry;
 
         public Initiator(@NotNull String purchaseOrderId,
-                         @NotNull String locId,
                          @NotNull String locType,
                          @NotNull String locExpiryDate,
                          @NotNull Party advisingBank,
@@ -87,7 +87,7 @@ public interface ApplyForLetterOfCreditFlow {
                          @NotNull String dischargePortCity,
                          @NotNull String dischargePortCountry) {
             this.purchaseOrderId = purchaseOrderId;
-            this.locId = locId;
+            this.locId = new UniqueIdentifier().toString();
             this.locType = locType;
             this.locExpiryDate = locExpiryDate;
             this.advisingBank = advisingBank;

@@ -98,10 +98,9 @@ public class ApproveLetterOfCreditApplicationFlowTests extends LetterOfCreditTes
                 letterOfCreditState.getLocId(),
                 "ISSUED"
         );
-        CordaFuture<SignedTransaction> future = issuingBank.startFlow(flow);
+        issuingBank.startFlow(flow);
         network.runNetwork();
 
-        SignedTransaction signedTx = future.get();
         // We check the recorded transaction in all vaults.
         for (StartedMockNode node : ImmutableList.of(seller, buyer, issuingBank, advisingBank)) {
             node.transaction(() -> {
@@ -109,7 +108,6 @@ public class ApproveLetterOfCreditApplicationFlowTests extends LetterOfCreditTes
                         node.getServices().getVaultService().queryBy(LetterOfCreditState.class).getStates();
                 assertEquals(1, letterOfCredits.size());
                 LetterOfCreditState recordedLetterOfCredit = letterOfCredits.get(0).getState().getData();
-                assertEquals(demoLetterOfCreditState.getLocId(), recordedLetterOfCredit.getLocId());
                 assertEquals(demoLetterOfCreditState.getLocType(), recordedLetterOfCredit.getLocType());
                 assertEquals(demoLetterOfCreditState.getLocExpiryDate(), recordedLetterOfCredit.getLocExpiryDate());
                 assertEquals(demoLetterOfCreditState.getSeller(), recordedLetterOfCredit.getSeller());
@@ -142,10 +140,9 @@ public class ApproveLetterOfCreditApplicationFlowTests extends LetterOfCreditTes
                 letterOfCreditState.getLocId(),
                 "REJECTED"
         );
-        CordaFuture<SignedTransaction> future = issuingBank.startFlow(flow);
+        issuingBank.startFlow(flow);
         network.runNetwork();
 
-        SignedTransaction signedTx = future.get();
         // We check the recorded transaction in all vaults.
         for (StartedMockNode node : ImmutableList.of(seller, buyer)) {
             node.transaction(() -> {
@@ -153,7 +150,6 @@ public class ApproveLetterOfCreditApplicationFlowTests extends LetterOfCreditTes
                         node.getServices().getVaultService().queryBy(LetterOfCreditState.class).getStates();
                 assertEquals(1, letterOfCredits.size());
                 LetterOfCreditState recordedLetterOfCredit = letterOfCredits.get(0).getState().getData();
-                assertEquals(demoLetterOfCreditState.getLocId(), recordedLetterOfCredit.getLocId());
                 assertEquals(demoLetterOfCreditState.getLocType(), recordedLetterOfCredit.getLocType());
                 assertEquals(demoLetterOfCreditState.getLocExpiryDate(), recordedLetterOfCredit.getLocExpiryDate());
                 assertEquals(demoLetterOfCreditState.getSeller(), recordedLetterOfCredit.getSeller());

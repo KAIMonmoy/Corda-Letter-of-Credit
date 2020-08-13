@@ -26,8 +26,7 @@ public class ApplyForLetterOfCreditFlowTests extends LetterOfCreditTests {
                 performCreatePurchaseOrderFlow(network, buyer, seller);
         final PurchaseOrderState purchaseOrder = inputRefs.get(0).getState().getData();
         ApplyForLetterOfCreditFlow.Initiator flow = new ApplyForLetterOfCreditFlow.Initiator(
-            purchaseOrder.getPurchaseOrderId(),
-                demoLetterOfCreditState.getLocId(),
+                purchaseOrder.getPurchaseOrderId(),
                 demoLetterOfCreditState.getLocType(),
                 demoLetterOfCreditState.getLocExpiryDate(),
                 advisingBank.getInfo().getLegalIdentities().get(0),
@@ -54,7 +53,6 @@ public class ApplyForLetterOfCreditFlowTests extends LetterOfCreditTests {
         final PurchaseOrderState purchaseOrder = inputRefs.get(0).getState().getData();
         ApplyForLetterOfCreditFlow.Initiator flow = new ApplyForLetterOfCreditFlow.Initiator(
                 purchaseOrder.getPurchaseOrderId(),
-                demoLetterOfCreditState.getLocId(),
                 demoLetterOfCreditState.getLocType(),
                 demoLetterOfCreditState.getLocExpiryDate(),
                 advisingBank.getInfo().getLegalIdentities().get(0),
@@ -84,7 +82,6 @@ public class ApplyForLetterOfCreditFlowTests extends LetterOfCreditTests {
         final PurchaseOrderState purchaseOrder = inputRefs.get(0).getState().getData();
         ApplyForLetterOfCreditFlow.Initiator flow = new ApplyForLetterOfCreditFlow.Initiator(
                 purchaseOrder.getPurchaseOrderId(),
-                demoLetterOfCreditState.getLocId(),
                 demoLetterOfCreditState.getLocType(),
                 demoLetterOfCreditState.getLocExpiryDate(),
                 advisingBank.getInfo().getLegalIdentities().get(0),
@@ -108,7 +105,6 @@ public class ApplyForLetterOfCreditFlowTests extends LetterOfCreditTests {
                         node.getServices().getVaultService().queryBy(LetterOfCreditState.class).getStates();
                 assertEquals(1, letterOfCredits.size());
                 LetterOfCreditState recordedLetterOfCredit = letterOfCredits.get(0).getState().getData();
-                assertEquals(demoLetterOfCreditState.getLocId(), recordedLetterOfCredit.getLocId());
                 assertEquals(demoLetterOfCreditState.getLocType(), recordedLetterOfCredit.getLocType());
                 assertEquals(demoLetterOfCreditState.getLocExpiryDate(), recordedLetterOfCredit.getLocExpiryDate());
                 assertEquals(demoLetterOfCreditState.getSeller(), recordedLetterOfCredit.getSeller());

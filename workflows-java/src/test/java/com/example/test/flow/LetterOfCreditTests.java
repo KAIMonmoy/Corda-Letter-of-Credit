@@ -148,7 +148,6 @@ abstract class LetterOfCreditTests {
         final PurchaseOrderState purchaseOrder = inputRefs.get(0).getState().getData();
         ApplyForLetterOfCreditFlow.Initiator flow = new ApplyForLetterOfCreditFlow.Initiator(
                 purchaseOrder.getPurchaseOrderId(),
-                demoLetterOfCreditState.getLocId(),
                 demoLetterOfCreditState.getLocType(),
                 demoLetterOfCreditState.getLocExpiryDate(),
                 advisingBank.getInfo().getLegalIdentities().get(0),

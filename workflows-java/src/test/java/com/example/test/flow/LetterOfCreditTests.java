@@ -227,7 +227,6 @@ abstract class LetterOfCreditTests {
         final LetterOfCreditState letterOfCredit = inputRefs.get(0).getState().getData();
         ShipProductsFlow.Initiator flow = new ShipProductsFlow.Initiator(
                 letterOfCredit.getLocId(),
-                demoBillOfLadingState.getBillOfLadingId(),
                 demoBillOfLadingState.getCarrierCompanyName(),
                 demoBillOfLadingState.getCarrierName(),
                 demoBillOfLadingState.getLoadingDate(),

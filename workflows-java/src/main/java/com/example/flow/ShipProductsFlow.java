@@ -6,6 +6,7 @@ import com.example.state.BillOfLadingState;
 import com.example.state.LetterOfCreditState;
 import net.corda.core.contracts.Command;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -68,14 +69,13 @@ public interface ShipProductsFlow {
         @NotNull private final String productDescription;
 
         public Initiator(@NotNull String locId,
-                         @NotNull String billOfLadingId,
                          @NotNull String carrierCompanyName,
                          @NotNull String carrierName,
                          @NotNull String loadingDate,
                          @NotNull String dischargeDate,
                          @NotNull String productDescription) {
             this.locId = locId;
-            this.billOfLadingId = billOfLadingId;
+            this.billOfLadingId = new UniqueIdentifier().toString();
             this.carrierCompanyName = carrierCompanyName;
             this.carrierName = carrierName;
             this.loadingDate = loadingDate;

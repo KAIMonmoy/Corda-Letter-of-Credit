@@ -78,14 +78,12 @@ public class PayAdvisingBankFlowTests extends LetterOfCreditTests {
                         node.getServices().getVaultService().queryBy(LetterOfCreditState.class).getStates();
                 assertEquals(1, letterOfCredits.size());
                 LetterOfCreditState recordedLetterOfCredit = letterOfCredits.get(0).getState().getData();
-                assertEquals(demoLetterOfCreditState.getLocId(), recordedLetterOfCredit.getLocId());
                 assertEquals("ADVISING_BANK_PAID", recordedLetterOfCredit.getLocStatus());
 
                 List<StateAndRef<BillOfLadingState>> bills =
                         node.getServices().getVaultService().queryBy(BillOfLadingState.class).getStates();
                 assertEquals(1, bills.size());
                 BillOfLadingState recordedBill = bills.get(0).getState().getData();
-                assertEquals(demoBillOfLadingState.getBillOfLadingId(), recordedBill.getBillOfLadingId());
                 assertEquals(recordedLetterOfCredit.getIssuingBank(), recordedBill.getCurrentOwner());
 
                 return null;

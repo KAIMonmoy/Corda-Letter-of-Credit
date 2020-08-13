@@ -29,7 +29,6 @@ public class ShipProductsFlowTests extends LetterOfCreditTests {
         final LetterOfCreditState letterOfCredit = inputRefs.get(0).getState().getData();
         ShipProductsFlow.Initiator flow = new ShipProductsFlow.Initiator(
                 letterOfCredit.getLocId(),
-                demoBillOfLadingState.getBillOfLadingId(),
                 demoBillOfLadingState.getCarrierCompanyName(),
                 demoBillOfLadingState.getCarrierName(),
                 demoBillOfLadingState.getLoadingDate(),
@@ -50,7 +49,6 @@ public class ShipProductsFlowTests extends LetterOfCreditTests {
         final LetterOfCreditState letterOfCredit = inputRefs.get(0).getState().getData();
         ShipProductsFlow.Initiator flow = new ShipProductsFlow.Initiator(
                 letterOfCredit.getLocId(),
-                demoBillOfLadingState.getBillOfLadingId(),
                 demoBillOfLadingState.getCarrierCompanyName(),
                 demoBillOfLadingState.getCarrierName(),
                 demoBillOfLadingState.getLoadingDate(),
@@ -71,7 +69,6 @@ public class ShipProductsFlowTests extends LetterOfCreditTests {
         final LetterOfCreditState letterOfCredit = inputRefs.get(0).getState().getData();
         ShipProductsFlow.Initiator flow = new ShipProductsFlow.Initiator(
                 letterOfCredit.getLocId(),
-                demoBillOfLadingState.getBillOfLadingId(),
                 demoBillOfLadingState.getCarrierCompanyName(),
                 demoBillOfLadingState.getCarrierName(),
                 demoBillOfLadingState.getLoadingDate(),
@@ -95,7 +92,6 @@ public class ShipProductsFlowTests extends LetterOfCreditTests {
         final LetterOfCreditState letterOfCredit = inputRefs.get(0).getState().getData();
         ShipProductsFlow.Initiator flow = new ShipProductsFlow.Initiator(
                 letterOfCredit.getLocId(),
-                demoBillOfLadingState.getBillOfLadingId(),
                 demoBillOfLadingState.getCarrierCompanyName(),
                 demoBillOfLadingState.getCarrierName(),
                 demoBillOfLadingState.getLoadingDate(),
@@ -113,14 +109,12 @@ public class ShipProductsFlowTests extends LetterOfCreditTests {
                         node.getServices().getVaultService().queryBy(LetterOfCreditState.class).getStates();
                 assertEquals(1, letterOfCredits.size());
                 LetterOfCreditState recordedLetterOfCredit = letterOfCredits.get(0).getState().getData();
-                assertEquals(demoLetterOfCreditState.getLocId(), recordedLetterOfCredit.getLocId());
                 assertEquals("SHIPPED", recordedLetterOfCredit.getLocStatus());
 
                 List<StateAndRef<BillOfLadingState>> billsOfLading =
                         node.getServices().getVaultService().queryBy(BillOfLadingState.class).getStates();
                 assertEquals(1, billsOfLading.size());
                 BillOfLadingState billOfLading = billsOfLading.get(0).getState().getData();
-                assertEquals(demoBillOfLadingState.getBillOfLadingId(), billOfLading.getBillOfLadingId());
                 assertEquals(demoBillOfLadingState.getSeller(), billOfLading.getCurrentOwner());
                 assertEquals(demoBillOfLadingState.getSeller(), billOfLading.getSeller());
                 assertEquals(demoBillOfLadingState.getBuyer(), billOfLading.getBuyer());

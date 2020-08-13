@@ -4,6 +4,7 @@ import co.paralleluniverse.fibers.Suspendable;
 import com.example.contract.LetterOfCreditContract;
 import com.example.state.PurchaseOrderState;
 import net.corda.core.contracts.Command;
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -65,14 +66,13 @@ public interface CreatePurchaseOrderFlow {
         @NotNull private final Long productGrossWeightInKG;
 
         public Initiator(
-                @NotNull String purchaseOrderId,
                 @NotNull Party buyer,
                 @NotNull String purchaseOrderIssueDate,
                 @NotNull String productName,
                 @NotNull Long productQuantity,
                 @NotNull Long productPriceInUSD,
                 @NotNull Long productGrossWeightInKG) {
-            this.purchaseOrderId = purchaseOrderId;
+            this.purchaseOrderId = new UniqueIdentifier().toString();
             this.buyer = buyer;
             this.purchaseOrderIssueDate = purchaseOrderIssueDate;
             this.productName = productName;

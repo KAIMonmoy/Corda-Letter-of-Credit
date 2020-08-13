@@ -22,7 +22,6 @@ public class CreatePurchaseOrderFlowTests extends LetterOfCreditTests {
     @Test
     public void signedTransactionReturnedByTheFlowIsSignedByTheInitiator() throws Exception {
         CreatePurchaseOrderFlow.Initiator flow = new CreatePurchaseOrderFlow.Initiator(
-                demoPurchaseOrder.getPurchaseOrderId(),
                 demoPurchaseOrder.getBuyer(),
                 demoPurchaseOrder.getPurchaseOrderIssueDate(),
                 demoPurchaseOrder.getProductName(),
@@ -41,7 +40,6 @@ public class CreatePurchaseOrderFlowTests extends LetterOfCreditTests {
     @Test
     public void signedTransactionReturnedByTheFlowIsSignedByTheBuyer() throws Exception {
         CreatePurchaseOrderFlow.Initiator flow = new CreatePurchaseOrderFlow.Initiator(
-                demoPurchaseOrder.getPurchaseOrderId(),
                 demoPurchaseOrder.getBuyer(),
                 demoPurchaseOrder.getPurchaseOrderIssueDate(),
                 demoPurchaseOrder.getProductName(),
@@ -60,7 +58,6 @@ public class CreatePurchaseOrderFlowTests extends LetterOfCreditTests {
     @Test
     public void flowRecordsATransactionInBothPartiesTransactionStorage() throws Exception {
         CreatePurchaseOrderFlow.Initiator flow = new CreatePurchaseOrderFlow.Initiator(
-                demoPurchaseOrder.getPurchaseOrderId(),
                 demoPurchaseOrder.getBuyer(),
                 demoPurchaseOrder.getPurchaseOrderIssueDate(),
                 demoPurchaseOrder.getProductName(),
@@ -79,9 +76,8 @@ public class CreatePurchaseOrderFlowTests extends LetterOfCreditTests {
     }
 
     @Test
-    public void flowRecordsTheCorrectPurchaseOrderInBothPartiesVaults() throws Exception {
+    public void flowRecordsTheCorrectPurchaseOrderInBothPartiesVaults() {
         CreatePurchaseOrderFlow.Initiator flow = new CreatePurchaseOrderFlow.Initiator(
-                demoPurchaseOrder.getPurchaseOrderId(),
                 demoPurchaseOrder.getBuyer(),
                 demoPurchaseOrder.getPurchaseOrderIssueDate(),
                 demoPurchaseOrder.getProductName(),
@@ -89,9 +85,8 @@ public class CreatePurchaseOrderFlowTests extends LetterOfCreditTests {
                 demoPurchaseOrder.getProductPriceInUSD(),
                 demoBillOfLadingState.getProductGrossWeightInKG()
         );
-        CordaFuture<SignedTransaction> future = seller.startFlow(flow);
+        seller.startFlow(flow);
         network.runNetwork();
-        SignedTransaction signedTx = future.get();
 
         // We check the recorded transaction in both vaults.
         for (StartedMockNode node : ImmutableList.of(seller, buyer)) {
@@ -100,7 +95,6 @@ public class CreatePurchaseOrderFlowTests extends LetterOfCreditTests {
                         node.getServices().getVaultService().queryBy(PurchaseOrderState.class).getStates();
                 assertEquals(1, purchaseOrders.size());
                 PurchaseOrderState recordedPurchaseOrder = purchaseOrders.get(0).getState().getData();
-                assertEquals(demoPurchaseOrder.getPurchaseOrderId(), recordedPurchaseOrder.getPurchaseOrderId());
                 assertEquals(demoPurchaseOrder.getSeller(), recordedPurchaseOrder.getSeller());
                 assertEquals(demoPurchaseOrder.getBuyer(), recordedPurchaseOrder.getBuyer());
                 assertEquals(demoPurchaseOrder.getPurchaseOrderIssueDate(), recordedPurchaseOrder.getPurchaseOrderIssueDate());

@@ -120,7 +120,6 @@ abstract class LetterOfCreditTests {
             @NotNull final StartedMockNode seller
     ) throws Throwable {
         CreatePurchaseOrderFlow.Initiator flow = new CreatePurchaseOrderFlow.Initiator(
-                demoPurchaseOrder.getPurchaseOrderId(),
                 buyer.getInfo().getLegalIdentities().get(0),
                 demoPurchaseOrder.getPurchaseOrderIssueDate(),
                 demoPurchaseOrder.getProductName(),

@@ -214,6 +214,11 @@ public class MainController {
 
     @GetMapping(value = "/transaction/po/{poId}",produces = APPLICATION_JSON_VALUE)
     public ResponseEntity getTransactionByPoId(@PathVariable String poId) {
+        final boolean isBank = me.toString().toLowerCase().contains("bank");
+        if (isBank)
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("Failed to fetch purchase order. Banks don't have access to purchase orders!");
         try {
             StateAndRef<PurchaseOrderState> unconsumedPurchaseOrder = proxy.vaultQueryByCriteria(
                     new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.UNCONSUMED),
@@ -249,11 +254,13 @@ public class MainController {
             // APPLIED -> REJECTED
             // APPLIED -> ISSUED -> SHIPPED -> SELLER_PAID -> ADVISING_BANK_PAID -> ISSUING_BANK_PAID
 
+            final boolean isBank = me.toString().toLowerCase().contains("bank");
+
             final boolean isBillAvailable =
                     !(locStatus.equals("APPLIED") || locStatus.equals("ISSUED") || locStatus.equals("REJECTED"));
 
             // Collect PO
-            StateAndRef<PurchaseOrderState> consumedPurchaseOrder = proxy.vaultQueryByCriteria(
+            StateAndRef<PurchaseOrderState> consumedPurchaseOrder = isBank ? null : proxy.vaultQueryByCriteria(
                     new QueryCriteria.VaultQueryCriteria(Vault.StateStatus.CONSUMED),
                     PurchaseOrderState.class).getStates().stream()
                     .filter(it -> it.getState().getData().getPurchaseOrderId().equals(poId))

@@ -104,3 +104,5 @@ In your browser, navigate open:
 Khandker Aftarul Islam (Monmoy) - [aftarulislam@gmail.com](mailto:aftarulislam@gmail.com) 
 
 Project Link: [https://github.com/KAIMonmoy/Corda-Letter-of-Credit](https://github.com/KAIMonmoy/Corda-Letter-of-Credit)
+
+#### Thanks to **[Tasin Ishmam](https://tasinishmam.com/)** for suggesting this awesome readme format!

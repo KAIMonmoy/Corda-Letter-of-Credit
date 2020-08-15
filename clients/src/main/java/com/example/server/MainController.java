@@ -168,6 +168,7 @@ public class MainController {
 
         try {
             List<HashMap<String, List>> transactions = new ArrayList<>();
+
             unconsumedPurchaseOrders.forEach(
                     it -> {
                         HashMap<String, List> tx = new HashMap<>();
@@ -189,15 +190,22 @@ public class MainController {
                         final boolean isBillAvailable =
                                 !(locStatus.equals("APPLIED") || locStatus.equals("ISSUED") || locStatus.equals("REJECTED"));
 
+                        final List<StateAndRef<PurchaseOrderState>> purchaseOrderList = consumedPurchaseOrders.stream()
+                                .filter(itr -> itr.getState().getData().getPurchaseOrderId().equals(poId))
+                                .collect(Collectors.toList());
+
+                        final StateAndRef<PurchaseOrderState> purchaseOrder =
+                                purchaseOrderList.size() > 0 ? purchaseOrderList.get(0) : null;
+
+                        final List<StateAndRef<BillOfLadingState>> billOfLadingList = unconsumedBillOfLadings.stream()
+                                .filter(itr -> itr.getState().getData().getBillOfLadingId().equals(bolId))
+                                .collect(Collectors.toList());
+
                         tx.put("states", Arrays.asList(
-                                consumedPurchaseOrders.stream()
-                                        .filter(itr -> itr.getState().getData().getPurchaseOrderId().equals(poId))
-                                        .collect(Collectors.toList()).get(0),
+                                purchaseOrder,
                                 it,
-                                isBillAvailable ? unconsumedBillOfLadings.stream()
-                                        .filter(itr -> itr.getState().getData().getBillOfLadingId().equals(bolId))
-                                        .collect(Collectors.toList()).get(0)
-                                        : null));
+                                isBillAvailable && billOfLadingList.size() > 0 ? billOfLadingList.get(0) : null));
+
                         transactions.add(tx);
                     }
             );

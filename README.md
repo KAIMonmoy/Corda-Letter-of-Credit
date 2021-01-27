@@ -99,6 +99,10 @@ In your browser, navigate open:
 * **[Dhaka Bank App](http://localhost:50007/):** http://localhost:50007
 * **[Kowloon Bank App](http://localhost:50008/):** http://localhost:50008
 
+## Clinet App
+
+Project Link: [https://github.com/KAIMonmoy/Corda-LOC-React-App](https://github.com/KAIMonmoy/Corda-LOC-React-App)
+
 ## Contact
 
 Khandker Aftarul Islam (Monmoy) - [aftarulislam@gmail.com](mailto:aftarulislam@gmail.com) 
